@@ -1,0 +1,16 @@
+{
+  "devDependencies": {
+    "serverless-offline": "^10.0.0"
+  },
+  "dependencies": {
+    "knex": "^2.3.0",
+    "mysql": "^2.18.1",
+    "mysql2": "^2.3.3",
+    "serverless": "^3.22.0"
+  },
+  "scripts": {
+    "build": "yarn upgrade",
+    "dev": "serverless offline start",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}

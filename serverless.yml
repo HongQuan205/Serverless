@@ -1,0 +1,46 @@
+
+service: myserverless
+
+
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+
+
+
+functions:
+  createStudent:
+    handler: src/function/student.createUser
+    events:
+      - http:
+          path: /create-user
+          method: post
+          cors: true
+
+  getUserById:
+    handler: src/function/student.getUserById
+    events:
+      - http:
+          path: /get-user/{id}
+          method: get
+          cors: true          
+
+  deleteUser:
+    handler: src/function/student.deleteUser
+    events:
+      - http:
+          path: /delete-user
+          method: delete
+          cors: true 
+  updateUser:
+    handler: src/function/student.updateUser
+    events:
+      - http:
+          path: /update-user
+          method: put
+          cors: true 
+
+plugins:
+  - serverless-offline
