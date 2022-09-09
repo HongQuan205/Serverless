@@ -3,9 +3,12 @@
     "serverless-offline": "^10.0.0"
   },
   "dependencies": {
+    "dotenv": "^16.0.2",
+    "jsonwebtoken": "^8.5.1",
     "knex": "^2.3.0",
     "mysql": "^2.18.1",
     "mysql2": "^2.3.3",
+    "password-hash": "^1.2.2",
     "serverless": "^3.22.0"
   },
   "scripts": {

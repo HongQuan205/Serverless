@@ -1,6 +1,5 @@
 const db = require('../db/db');
 
-
 async function getUserById(id) {
     try {
         const getUser = await db("users").where('id', id)
@@ -9,13 +8,16 @@ async function getUserById(id) {
                 'name',
                 'age',
                 'phone_number',
-                'address'
+                'address',
+                'username',
+                'password'
             )
         return getUser;
     } catch (error) {
         console.log("Da xay loi", error)
     }
 }
+
 
 async function createUser(user) {
     const trx = await db.transaction();
@@ -25,7 +27,7 @@ async function createUser(user) {
             age: user.age,
             phone_number: user.phone_number,
             address: user.address,
-            username:user.username,
+            username: user.username,
             password: user.password
         }
     );
@@ -65,7 +67,24 @@ async function updateUser(updateUser) {
         console.log(error)
     }
 }
-
+async function getUserByUsername(username)
+{
+    try{
+        const getUserByUserName = await db('users').where('username',username).select(
+            'id',
+            'name',
+            'age',
+            'phone_number',
+            'address',
+            'username',
+            'password'
+        ).first()
+        return getUserByUserName;
+    }catch(error)
+    {
+        console.log(error)
+    }
+}
 module.exports = {
-    getUserById, createUser, deleteUser,updateUser
+    getUserById, createUser, deleteUser, updateUser,getUserByUsername
 }

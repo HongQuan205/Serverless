@@ -1,7 +1,9 @@
-'user strict'
+
+'use strict'
+
 const userRepo = require('../repository/UserRepository')
 const passwordHash = require('password-hash')
-
+require('dotenv').config()
 module.exports.getUserById = async (event) => {
     try {
         let id = event.pathParameters.id;
@@ -35,14 +37,13 @@ module.exports.getUserById = async (event) => {
 module.exports.createUser = async (event) => {
     try {
         const eventBody = JSON.parse(event.body);
-        const { name,age,phone_number,address,username,password } = eventBody;
-        if(!name || !age || !phone_number || !address || !username || !password)
-        {
+        const { name, age, phone_number, address, username, password } = eventBody;
+        if (!name || !age || !phone_number || !address || !username || !password) {
             return {
                 statusCode: 500,
                 body: JSON.stringify({
-                    message:" Error in Internal",
-                    code:"500"
+                    message: " Error in Internal",
+                    code: "500"
                 })
             }
         }
@@ -51,8 +52,8 @@ module.exports.createUser = async (event) => {
             age: eventBody.age,
             phone_number: eventBody.phone_number,
             address: eventBody.address,
-            username:eventBody.username,
-            password:passwordHash.generate(eventBody.password),
+            username: eventBody.username,
+            password: passwordHash.generate(eventBody.password),
         }
         let user = await userRepo.createUser(createUser);
         if (user == null) {
@@ -134,3 +135,39 @@ module.exports.updateUser = async (event) => {
     }
 }
 
+module.exports.login = async (event) => {
+    try {
+        const { username, password } = JSON.parse(event.body);
+        const getUserFromUsername = await userRepo.getUserByUsername(username);
+        console.log(passwordHash.verify(password, getUserFromUsername.password));
+        if (!passwordHash.verify(password, getUserFromUsername.password)) {
+            return {
+                statusCode: 404,
+                body: JSON.stringify({
+                    message: "password is incorrect",
+                    code: 404,
+                })
+            }
+        }
+        let token = (
+            {
+                userId: getUserFromUsername.id,
+                username: getUserFromUsername.username,
+            },process.env.jwt_secret,
+            {
+                expiresIn: process.env.jwt_expire_in
+            }
+        )
+        return {
+            statusCode: 200,
+            body: JSON.stringify({
+                message: "Login success fully",
+                username:getUserFromUsername.username,
+                token: token,
+            })
+        }
+    } catch (error) {
+
+    }
+
+}

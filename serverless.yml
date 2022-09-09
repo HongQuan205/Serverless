@@ -41,6 +41,12 @@ functions:
           path: /update-user
           method: put
           cors: true 
-
+  login:
+    handler: src/function/student.login
+    events:
+      - http:
+          path: /login
+          method: put
+          cors: true 
 plugins:
   - serverless-offline
