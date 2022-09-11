@@ -46,7 +46,7 @@ functions:
     events:
       - http:
           path: /login
-          method: put
+          method: post
           cors: true 
 plugins:
   - serverless-offline

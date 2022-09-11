@@ -1,4 +1,0 @@
-jwt_secret: "hongquan"
-
-jwt_expire_in: "30m",
-jwt_expire_stay_sign_in : "72h"
