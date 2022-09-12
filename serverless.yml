@@ -12,7 +12,7 @@ provider:
 
 functions:
   createStudent:
-    handler: src/function/student.createUser
+    handler: src/function/users.createUser
     events:
       - http:
           path: /create-user
@@ -20,7 +20,7 @@ functions:
           cors: true
 
   getUserById:
-    handler: src/function/student.getUserById
+    handler: src/function/users.getUserById
     events:
       - http:
           path: /get-user/{id}
@@ -28,25 +28,40 @@ functions:
           cors: true          
 
   deleteUser:
-    handler: src/function/student.deleteUser
+    handler: src/function/users.deleteUser
     events:
       - http:
           path: /delete-user
           method: delete
           cors: true 
   updateUser:
-    handler: src/function/student.updateUser
+    handler: src/function/users.updateUser
     events:
       - http:
           path: /update-user
           method: put
           cors: true 
   login:
-    handler: src/function/student.login
+    handler: src/function/users.login
     events:
       - http:
           path: /login
           method: post
           cors: true 
+  check:
+    handler: src/function/users.check
+    events:
+      - http:
+          path: /check
+          method: get
+          cors: true 
+
+  getScoreByUser:
+    handler: src/function/scores.getAllScoreFromUser
+    events:
+      - http:
+          path: /get-score/{idUser}
+          method: get
+          cors: true
 plugins:
   - serverless-offline

@@ -42,8 +42,8 @@ async function createUser(user) {
 async function deleteUser(id) {
     try {
         const deleteUser = await db('users').where('id', id).del();
-        if (deleteUser == null) {
-            return deleteUser;
+        if (deleteUser === null) {
+            return null;
         }
         else {
             return {
@@ -52,6 +52,7 @@ async function deleteUser(id) {
         }
     } catch (error) {
         console.log(error)
+        return error;
     }
 }
 async function updateUser(updateUser) {
@@ -60,7 +61,9 @@ async function updateUser(updateUser) {
             name: updateUser.name,
             age: updateUser.age,
             phone_number: updateUser.phone_number,
-            address: updateUser.address
+            address: updateUser.address,
+            username: updateUser.username,
+            password:updateUser.password
         });
         return update;
     } catch (error) {
@@ -85,6 +88,24 @@ async function getUserByUsername(username)
         console.log(error)
     }
 }
+async function checkDB()
+{
+    try {
+        const getUserByUserName = await db("users").where('id', 7)
+        .select(
+            'id',
+            'name',
+            'age',
+            'phone_number',
+            'address',
+            'username',
+            'password'
+        ).first()
+        return getUserByUserName;
+    } catch (error) {
+        console.log(error)
+    }
+}
 module.exports = {
-    getUserById, createUser, deleteUser, updateUser,getUserByUsername
+    getUserById, createUser, deleteUser, updateUser,getUserByUsername,checkDB
 }

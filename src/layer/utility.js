@@ -8,8 +8,14 @@ const createResponse = (isSuccess = true, data = {}, code, message) => {
         response['status'] = 'success',
             response['data'] = data
     } else if (message) {
-        response['data'] = data,
-            response['message'] = 'error'
+        response['status'] = 'error',
+            response['message'] = message
+        if (code) {
+            response['code'] = code;
+        }
+        if (data) {
+            response['data'] = data;
+        }
     } else {
         response['status'] = 'fail',
             response['data'] = data
@@ -36,11 +42,11 @@ const createToken = (data) => {
         )
         return token;
     }
-    else{
+    else {
         return null;
     }
 
 }
 module.exports = {
-    createResponse,createToken
+    createResponse, createToken
 }
