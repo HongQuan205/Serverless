@@ -4,6 +4,7 @@
 const userRepo = require('../repository/UserRepository')
 const passwordHash = require('password-hash')
 const jwt = require('jsonwebtoken')
+const utility = require('../layer/utility')
 require('dotenv').config();
 module.exports.getUserById = async (event) => {
     try {
@@ -63,9 +64,9 @@ module.exports.getUserById = async (event) => {
 module.exports.createUser = async (event) => {
     try {
         const { Authorization } = event.headers;
-        const jwttoken = Authorization ? Authorization.split(' ')[1] : '';
-        const { userId } = jwt.verify(jwttoken, process.env.jwt_secret);
-        if (jwttoken) {
+        if (Authorization) {
+            const jwttoken = Authorization ? Authorization.split(' ')[1] : '';
+            const { userId } = jwt.verify(jwttoken, process.env.jwt_secret);
             const eventBody = JSON.parse(event.body);
             const { name, age, phone_number, address, username, password } = eventBody;
             if (!name || !age || !phone_number || !address || !username || !password) {
@@ -113,13 +114,22 @@ module.exports.createUser = async (event) => {
                 body: JSON.stringify(
                     {
                         message: "UnAuthorization",
-                        code: 401
+                        data: user,
                     }
                 )
             }
         }
     } catch (error) {
-        console.log("Error occur", error)
+        console.log(error)
+        return {
+            statusCode: 500,
+            body: JSON.stringify(
+                {
+                    message: "Error internal",
+                    code: 500
+                }
+            )
+        }
     }
 }
 
@@ -179,7 +189,6 @@ module.exports.updateUser = async (event) => {
 
 module.exports.login = async (event) => {
     try {
-        console.log(process.env.jwt_secret);
         const { username, password } = JSON.parse(event.body);
         const getUserFromUsername = await userRepo.getUserByUsername(username);
         console.log(passwordHash.verify(password, getUserFromUsername.password));
@@ -192,23 +201,16 @@ module.exports.login = async (event) => {
                 })
             }
         }
-        let token = jwt.sign(
-            {
-                userId: getUserFromUsername.id,
-                username: getUserFromUsername.username,
-            }, process.env.jwt_secret,
-            {
-                expiresIn: process.env.jwt_expire_in
-            }
-        )
-        return {
-            statusCode: 200,
-            body: JSON.stringify({
-                message: "Login success fully",
-                username: getUserFromUsername.username,
-                token: token,
-            })
+        const data ={
+            userId: getUserFromUsername.id,
+            username: getUserFromUsername.username
         }
+        let token =utility.createToken(data);
+        const result = {
+            username: getUserFromUsername.username,
+            token:token
+        }
+        return utility.createResponse(true,result,200,"Login successfully");
     } catch (error) {
         console.log(error)
     }
