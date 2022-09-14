@@ -1,5 +1,7 @@
 const db = require('../db/db');
 
+
+
 async function getUserById(id) {
     try {
         const getUser = await db("users").where('id', id)
@@ -81,7 +83,7 @@ async function getUserByUsername(username)
             'address',
             'username',
             'password'
-        ).first()
+        )
         return getUserByUserName;
     }catch(error)
     {
