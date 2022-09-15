@@ -1,67 +1,14 @@
 
-service: myserverless
-
+service: ${file(./configs/serverless.yml):service}
 
 frameworkVersion: '3'
 
-provider:
-  name: aws
-  runtime: nodejs12.x
+package: ${file(./configs/serverless.yml)}
+
+provider: ${file(./configs/serverless.yml):provider}
+
+functions: ${file(./configs/functions.yml):functions}
 
 
-
-functions:
-  createStudent:
-    handler: src/function/users.createUser
-    events:
-      - http:
-          path: /create-user
-          method: post
-          cors: true
-
-  getUserById:
-    handler: src/function/users.getUserById
-    events:
-      - http:
-          path: /get-user/{id}
-          method: get
-          cors: true          
-
-  deleteUser:
-    handler: src/function/users.deleteUser
-    events:
-      - http:
-          path: /delete-user
-          method: delete
-          cors: true 
-  updateUser:
-    handler: src/function/users.updateUser
-    events:
-      - http:
-          path: /update-user
-          method: put
-          cors: true 
-  login:
-    handler: src/function/users.login
-    events:
-      - http:
-          path: /login
-          method: post
-          cors: true 
-  check:
-    handler: src/function/users.check
-    events:
-      - http:
-          path: /check
-          method: get
-          cors: true 
-
-  getScoreByUser:
-    handler: src/function/scores.getAllScoreFromUser
-    events:
-      - http:
-          path: /get-score/{idUser}
-          method: get
-          cors: true
 plugins:
   - serverless-offline

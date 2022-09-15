@@ -1,0 +1,15 @@
+
+service: myserverless
+
+
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+
+package:
+  patterns:
+    - '!node_modules/**'
+plugins:
+  - serverless-offline

@@ -1,0 +1,54 @@
+
+functions:
+  createStudent:
+    handler: src/function/Users/create_user.createUser
+    events:
+      - http:
+          path: /create-user
+          method: post
+          cors: true
+
+  getUserById:
+    handler: src/function/Users/get_user_by_id.getUserById
+    events:
+      - http:
+          path: /get-user/{id}
+          method: get
+          cors: true          
+
+  deleteUser:
+    handler: src/function/Users/delete_user.deleteUser
+    events:
+      - http:
+          path: /delete-user
+          method: delete
+          cors: true 
+  updateUser:
+    handler: src/function/Users/update_user.updateUser
+    events:
+      - http:
+          path: /update-user
+          method: put
+          cors: true 
+  login:
+    handler: src/function/Users/login.login
+    events:
+      - http:
+          path: /login
+          method: post
+          cors: true 
+  check:
+    handler: src/function/Users/check.check
+    events:
+      - http:
+          path: /check
+          method: get
+          cors: true 
+
+  getScoreByUser:
+    handler: src/function/Scores/get_all_by_idUser.getAllScoreFromUser
+    events:
+      - http:
+          path: /get-score/{idUser}
+          method: get
+          cors: true

@@ -12,11 +12,11 @@ async function getUserById(id) {
                 'phone_number',
                 'address',
                 'username',
-                'password'
-            )
+            ).first();
         return getUser;
     } catch (error) {
         console.log("Da xay loi", error)
+        return null;
     }
 }
 
@@ -83,7 +83,7 @@ async function getUserByUsername(username)
             'address',
             'username',
             'password'
-        )
+        ).first();
         return getUserByUserName;
     }catch(error)
     {
