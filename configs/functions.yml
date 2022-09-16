@@ -7,6 +7,9 @@ functions:
           path: /create-user
           method: post
           cors: true
+          authorizer:
+            name: auth
+            resultTtlInSeconds: ${self:custom.resultTtlInSeconds}
 
   getUserById:
     handler: src/function/Users/get_user_by_id.getUserById
@@ -52,3 +55,6 @@ functions:
           path: /get-score/{idUser}
           method: get
           cors: true
+
+  auth:
+    handler: src/function/Auth/verifyToken.verifyFunc
