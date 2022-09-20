@@ -88,6 +88,7 @@ async function getUserByUsername(username)
     }catch(error)
     {
         console.log(error)
+        return null;
     }
 }
 async function checkDB()

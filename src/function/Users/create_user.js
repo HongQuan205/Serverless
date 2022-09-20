@@ -20,7 +20,8 @@ module.exports.createUser = async (event) => {
                 return utility.createResponse(false, null, 500, "Error in Internal");
             }
             const checkUserInDb = await userRepo.getUserByUsername(username);
-            if(checkUserInDb.username === username)
+            console.log(checkUserInDb)
+            if(checkUserInDb !== null )
             {
                 return utility.createResponse(false,null,500, "User is existed");
             }

@@ -3,7 +3,7 @@ service: ${file(./configs/serverless.yml):service}
 
 frameworkVersion: '3'
 
-package: ${file(./configs/serverless.yml)}
+package: ${file(./configs/serverless.yml):package}
 
 provider: ${file(./configs/serverless.yml):provider}
 

@@ -6,21 +6,14 @@ const jwt = require('jsonwebtoken')
 const utility = require('../../layer/utility')
 require('dotenv').config();
 
-
-
-
-
-
-
 module.exports.login = async (event) => {
     try {
         const { username, password } = JSON.parse(event.body);
         const getUserFromUsername = await userRepo.getUserByUsername(username);
-        if(!getUserFromUsername)
+        if(getUserFromUsername === null)
         {
             return  utility.createResponse(false, null, 500, "User is not existed");
         }
-        console.log(password, getUserFromUsername.password);
         if (!passwordHash.verify(password, getUserFromUsername.password)) {
             return  utility.createResponse(false, null, 404, "Password is incorrect");
         }
