@@ -14,3 +14,4 @@ package:
     - '!src/layer/**'
 plugins:
   - serverless-offline
+

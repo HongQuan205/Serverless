@@ -3,7 +3,7 @@
 const userRepo = require('../../layer/repository/UserRepository')
 const passwordHash = require('password-hash')
 const jwt = require('jsonwebtoken')
-const utility = require('../../layer/utility')
+const utility = require('../../layer/utility/utility')
 require('dotenv').config();
 
 module.exports.login = async (event) => {

@@ -3,28 +3,24 @@
 const userRepo = require('../../layer/repository/UserRepository')
 const passwordHash = require('password-hash')
 const jwt = require('jsonwebtoken')
-const utility = require('../../layer/utility')
+const utility = require('../../layer/utility/utility')
 require('dotenv').config();
-
-
-
 
 
 module.exports.deleteUser = async (event) => {
     try {
-        const { Authorization } = event.headers;
-        const jwttoken = Authorization ? Authorization.split(' ')[1] : '';
-        if (jwttoken) {
-            const eventBody = JSON.parse(event.body);
-            const deleteUser = await userRepo.deleteUser(eventBody.id);
-            if (!deleteUser) {
-                return utility.createResponse(false, null, 500, "Delete Fail User");
+        const {ids} = JSON.parse(event.body);
+        let count =0;
+        for(var i =0;i< ids.length;i++)
+        {
+            let deleteUser = await userRepo.deleteUser(ids[i]);
+            if(deleteUser)
+            {
+                count++;
             }
-            return utility.createResponse(true, deleteUser, 200, "Delete User Successfully");
         }
-        else {
-            utility.createResponse(false, null, 401, "UnAuthorization");
-        }
+        let response = "Can deletes: " + count +"/"+this.deleteUser.length
+        return utility.createResponse(true, response, 200, "Delete User Successfully");
     } catch (error) {
         console.log(error);
         utility.createResponse(false, null, 401, "UnAuthorization");

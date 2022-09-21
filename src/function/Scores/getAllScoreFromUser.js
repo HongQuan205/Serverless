@@ -3,7 +3,7 @@
 require('dotenv').config();
 const scoreRepo = require('../../repository/ScoresRepository')
 const userRepo = require('../../repository/UserRepository')
-const utility = require('../../layer/utility')
+const utility = require('../../layer/utility/utility')
 module.exports.getAllScoreFromUser = async (event) => {
     try {
         const { Authorization } = event.headers

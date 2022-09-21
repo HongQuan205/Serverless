@@ -30,31 +30,33 @@ async function createUser(user) {
             phone_number: user.phone_number,
             address: user.address,
             username: user.username,
-            password: user.password
+            password: user.password,
+            token: user.token
         }
     );
-    if (createUser == null) {
+    if (!createUser) {
         await trx.rollback();
-        return {
-            status: "Fail",
-            messageCode: 500,
-        }
-    } return createUser;
+        return false;
+    }
+    await trx.commit();
+    return createUser
 }
 async function deleteUser(id) {
     try {
-        const deleteUser = await db('users').where('id', id).del();
-        if (deleteUser === null) {
-            return null;
-        }
-        else {
-            return {
-                data: deleteUser
+        await db.transaction(async trx => {
+            const deleteUser = await trx('users').where('id', id).del();
+            if (deleteUser) {
+                await trx.commit();
+                return true;
             }
-        }
+            else {
+                await trx.rollback();
+                return false;
+            }
+        })
     } catch (error) {
         console.log(error)
-        return error;
+        return false;
     }
 }
 async function updateUser(updateUser) {
@@ -65,17 +67,26 @@ async function updateUser(updateUser) {
             phone_number: updateUser.phone_number,
             address: updateUser.address,
             username: updateUser.username,
-            password:updateUser.password
+            password: updateUser.password
         });
         return update;
     } catch (error) {
         console.log(error)
     }
 }
-async function getUserByUsername(username)
+async function getTokenByUserId(userId)
 {
-    try{
-        const getUserByUserName = await db('users').where('username',username).select(
+    try {
+        let  getToken= await db('users').where('id',userId).select('token')
+        return getToken ? getToken : null
+    } catch (error) {
+        console.log(error)
+        return null;
+    }
+}
+async function getUserByUsername(username) {
+    try {
+        const getUserByUserName = await db('users').where('username', username).select(
             'id',
             'name',
             'age',
@@ -85,30 +96,28 @@ async function getUserByUsername(username)
             'password'
         ).first();
         return getUserByUserName;
-    }catch(error)
-    {
+    } catch (error) {
         console.log(error)
         return null;
     }
 }
-async function checkDB()
-{
+async function checkDB() {
     try {
         const getUserByUserName = await db("users").where('id', 7)
-        .select(
-            'id',
-            'name',
-            'age',
-            'phone_number',
-            'address',
-            'username',
-            'password'
-        ).first()
+            .select(
+                'id',
+                'name',
+                'age',
+                'phone_number',
+                'address',
+                'username',
+                'password'
+            ).first()
         return getUserByUserName;
     } catch (error) {
         console.log(error)
     }
 }
 module.exports = {
-    getUserById, createUser, deleteUser, updateUser,getUserByUsername,checkDB
+    getUserById, createUser, deleteUser, updateUser, getUserByUsername, checkDB,getTokenByUserId
 }
