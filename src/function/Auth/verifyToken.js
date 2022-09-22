@@ -73,7 +73,6 @@ const verifyFuction = async (event) => {
                             "exampleKey": "Success"
                         }
                     }
-
                 }
             }
         } catch (error) {

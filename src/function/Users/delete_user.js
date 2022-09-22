@@ -1,9 +1,8 @@
 'use strict'
 
-const userRepo = require('../../layer/repository/UserRepository')
-const passwordHash = require('password-hash')
-const jwt = require('jsonwebtoken')
-const utility = require('../../layer/utility/utility')
+const userRepo = require('repository').UserRepository
+const utility = require('utility')
+const { message, code } = require('constant').common
 require('dotenv').config();
 
 
@@ -20,9 +19,9 @@ module.exports.deleteUser = async (event) => {
             }
         }
         let response = "Can deletes: " + count +"/"+this.deleteUser.length
-        return utility.createResponse(true, response, 200, "Delete User Successfully");
+        return utility.createResponse(true, response, code.SUCCESS, message.SUCCESS);
     } catch (error) {
         console.log(error);
-        utility.createResponse(false, null, 401, "UnAuthorization");
+        return utility.createResponse(false, null, code.ERROR, message.server_error);
     }
 }

@@ -1,46 +1,42 @@
 'use strict'
 
-const userRepo = require('../../layer/repository/UserRepository')
+const userRepo = require('respository').UserRepository
 const passwordHash = require('password-hash')
-const jwt = require('jsonwebtoken')
-const utility = require('../../layer/utility/utility')
+const utility = require('utility')
+
+const { message, code } = require('constant').common
 require('dotenv').config();
 
 
 
 module.exports.createUser = async (event) => {
     try {
-        const { Authorization } = event.headers;
-        const jwttoken = Authorization ? Authorization.split(' ')[1] : '';
-            const { userId } = jwt.verify(jwttoken, process.env.jwt_secret);
-            const eventBody = JSON.parse(event.body);
-            const { name, age, phone_number, address, username, password } = eventBody;
-            if (!name || !age || !phone_number || !address || !username || !password) {
-                return utility.createResponse(false, null, 500, "Input is invalid");
-            }
-            const checkUserInDb = await userRepo.getUserByUsername(username);
-            if(checkUserInDb)
-            {
-                return utility.createResponse(false,null,500, "User is existed");
-            }
-            const createUser = {
-                name: eventBody.name,
-                age: eventBody.age,
-                phone_number: eventBody.phone_number,
-                address: eventBody.address,
-                username: eventBody.username,
-                password: passwordHash.generate(eventBody.password),
-                token: jwttoken
-            }
-            let user = await userRepo.createUser(createUser);
-     
-            if (!user) {
-                return utility.createResponse(false, null, 500, "Create user fail");
+        const eventBody = JSON.parse(event.body);
+        const { name, age, phone_number, address, username, password } = eventBody;
+        if (!name || !age || !phone_number || !address || !username || !password) {
+            return utility.createResponse(false, null, code.ERROR, message.SUCCESS);
+        }
+        const checkUserInDb = await userRepo.getUserByUsername(username);
+        if (checkUserInDb) {
+            return utility.createResponse(false, null, code.ERROR, message.user_existed);
+        }
+        const createUser = {
+            name: eventBody.name,
+            age: eventBody.age,
+            phone_number: eventBody.phone_number,
+            address: eventBody.address,
+            username: eventBody.username,
+            password: passwordHash.generate(eventBody.password),
+            token: jwttoken
+        }
+        let user = await userRepo.createUser(createUser);
 
-            }
-            return utility.createResponse(true, user, 200, "Create User Successfully");
+        if (!user) {
+            return utility.createResponse(false, null, code.ERROR, message.server_error);
+        }
+        return utility.createResponse(true, user, code.SUCCESS, message.SUCCESS);
     } catch (error) {
         console.log(error)
-        return utility.createResponse(false, null, 500, "Error in internal")
+        return utility.createResponse(false, null, code.ERROR, message.server_error);
     }
 }

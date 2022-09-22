@@ -46,6 +46,8 @@ module.exports.message = Object.freeze({
     wrong_phone_number: 'trans.wrong_phone_number',
     wrong_code: 'trans.wrong_code',
     code_expire: 'trans.code_expire',
+    user_existed:"User is existed",
+    user_not_existed:"User is not existed"
   })
   
   module.exports.flag = Object.freeze({

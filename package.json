@@ -1,8 +1,14 @@
 {
+  "name": "fxt",
+  "version": "1.0.0",
+  "description": "leaning nodejs",
+  "main": "index.js",
   "devDependencies": {
     "serverless-offline": "^10.0.0"
   },
   "dependencies": {
+    "constant": "./src/layer/constant",
+    "db": "./src/layer/db",
     "dotenv": "^16.0.2",
     "jsonwebtoken": "^8.5.1",
     "knex": "^2.3.0",
@@ -11,7 +17,9 @@
     "nodemailer": "^6.7.8",
     "password-hash": "^1.2.2",
     "pg": "^8.8.0",
-    "serverless": "^3.22.0"
+    "repository": "./src/layer/repository",
+    "serverless": "^3.22.0",
+    "utility": "./src/layer/utility"
   },
   "scripts": {
     "build": "yarn upgrade",

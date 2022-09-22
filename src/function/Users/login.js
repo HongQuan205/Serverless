@@ -1,21 +1,22 @@
 'use strict'
 
-const userRepo = require('../../layer/repository/UserRepository')
+const userRepo = require('repository').UserRepository
 const passwordHash = require('password-hash')
-const jwt = require('jsonwebtoken')
-const utility = require('../../layer/utility/utility')
+const utility = require('utility')
+const { message, code } = require('constant').common
 require('dotenv').config();
 
 module.exports.login = async (event) => {
     try {
+        console.log("hongquan")
         const { username, password } = JSON.parse(event.body);
         const getUserFromUsername = await userRepo.getUserByUsername(username);
         if(getUserFromUsername === null)
         {
-            return  utility.createResponse(false, null, 500, "User is not existed");
+            return  utility.createResponse(false, null, code.ERROR, message.user_not_existed);
         }
         if (!passwordHash.verify(password, getUserFromUsername.password)) {
-            return  utility.createResponse(false, null, 404, "Password is incorrect");
+            return  utility.createResponse(false, null, code.ERROR, message.setting_password_pending);
         }
         const data = {
             userId: getUserFromUsername.id,
@@ -26,10 +27,10 @@ module.exports.login = async (event) => {
             username: getUserFromUsername.username,
             token: token
         }
-        return utility.createResponse(true, result, 200, "Login successfully");
+        return utility.createResponse(true, user, code.SUCCESS, message.SUCCESS);
     } catch (error) {
         console.log(error)
-        return utility.createResponse(false, null, 500, "Error Internal");
+        return utility.createResponse(false, null, code.ERROR, message.server_error);
     }
 
 }
