@@ -74,10 +74,10 @@ async function updateUser(updateUser) {
         console.log(error)
     }
 }
-async function getTokenByUserId(userId)
+async function getTokenByUsername(username)
 {
     try {
-        let  getToken= await db('users').where('id',userId).select('token')
+        let  getToken= await db('users').where('username',username).select('token')
         return getToken ? getToken : null
     } catch (error) {
         console.log(error)
@@ -95,7 +95,7 @@ async function getUserByUsername(username) {
             'username',
             'password'
         ).first();
-        return getUserByUserName;
+        return getUserByUserName ? getUserByUserName : null;
     } catch (error) {
         console.log(error)
         return null;

@@ -7,7 +7,6 @@ const verifyToken = async (event, context, callback) => {
     try {
         context.callbackWaitsForEmptyEventLoop = false
         let data = await verifyFuction(event);
-        console.log(data);
         if (data.code === 200) {
             callback(null, data.result);
         }
@@ -34,9 +33,7 @@ const verifyFuction = async (event) => {
                 }
             }
             else {
-                console.log(decode.userId);
-                const checkTokenInDb = await userRepository.getTokenByUserId(decode.userId);
-                console.log(checkTokenInDb);
+                const checkTokenInDb = await userRepository.getTokenByUsername(decode.username);
                 if (!checkTokenInDb) {
                     return {
                         "principalId": decode.iat,

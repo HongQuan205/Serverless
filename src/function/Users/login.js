@@ -8,10 +8,9 @@ require('dotenv').config();
 
 module.exports.login = async (event) => {
     try {
-        console.log("hongquan")
         const { username, password } = JSON.parse(event.body);
         const getUserFromUsername = await userRepo.getUserByUsername(username);
-        if(getUserFromUsername === null)
+        if(!getUserFromUsername)
         {
             return  utility.createResponse(false, null, code.ERROR, message.user_not_existed);
         }
@@ -27,7 +26,7 @@ module.exports.login = async (event) => {
             username: getUserFromUsername.username,
             token: token
         }
-        return utility.createResponse(true, user, code.SUCCESS, message.SUCCESS);
+        return utility.createResponse(true, result, code.SUCCESS, message.SUCCESS);
     } catch (error) {
         console.log(error)
         return utility.createResponse(false, null, code.ERROR, message.server_error);

@@ -3,7 +3,7 @@
 /**
  * @type { Object.<string, import("knex").Knex.Config> }
  */
-module.exports = {
+module.exports.knexfile = {
 
   development: {
     client: 'mysql2',
