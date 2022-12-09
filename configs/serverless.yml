@@ -6,8 +6,48 @@ frameworkVersion: '3'
 
 provider:
   name: aws
+  apiGateway:
+    binaryMediaTypes:
+      - 'image/jpeg'
+      - 'image/png'
+      - 'multipart/form-data'
+  endpointType: REGIONAL
+  timeout: 30
+  region: ap-southeast-1
   runtime: nodejs12.x
-
+  environment:
+    NODE_PATH: "./:/opt/es"
+    DB_CLIENT: "mysql2"
+    DB_HOST: "rk-d6-p2tech-fcrm-dev.csyhlabsini0.ap-southeast-1.rds.amazonaws.com"
+    DB_PORT: "3306"
+    DB_USER: "test"
+    DB_PASSWORD: "Hanoi!123"
+    DB_NAME: "p2tech_test"
+    SECRET_KEY_RECAPTCHA: "6Lcp9GcjAAAAAISYj6JWT9VxUezf1yHocb4lYDuN"
+    EMAIL: "reports@myforex.com"
+    PASSWORD_EMAIL: "ddyQ7UKseXGo&7zY"
+    MAIL_HOST: "smtp.gmail.com"
+    MAIL_PORT: "587"
+    JWT_SECRET: "AKSJCNDUWIUFMKDNDS"
+    JWT_EXPIRES_FRAUD_ALERT: '1h'
+    JWT_EXPIRES: "1h"
+    JWT_EXPIRES_STAY_SIGN_IN: "30d"
+    SITE_ID: "1448854582"
+    API_KEY: "e6bc18eb-2b0d-4f95-88d9-2ec9b547d5d0"
+    URL_FE: "http://myforex.com:3000"
+    BUCKET: "d6-myforex-dev-storage"
+    AWS_PUBLIC_KEY_ID: "AKIATE5ODWNJPGR6GQIQ"
+    AWS_PRIVATE_KEY_ID: "rkDGAnwkFngc+xApNVHDiwSRJIINawfYLsFsCy+6"
+    SECRET_KEY_CRYPTOJS: "Qb63cvxs92D63xdf9lk746F"
+    VERSION: "2012-10-17"
+    URL_IMAGE_BASE_MAIL: "https://myforex.com/common/images/mail"
+    COUNT_PENDING: "5"
+    TIME_PENDING: "60"
+    TWILIO_ACCOUNT_SID: "ACf428c20126a3b2063842f99bb1e8042e"
+    TWILIO_AUTH_TOKEN: "9648f83b99539223e9ddcbe1ec3df8d5"
+    SERVICES_SID: "MG17e89414f9a3b98cd3f5ceeac8eb18df"
+    TIME_SMS_EXPIRE: "10"
+    API_KEY_IP: "pvCRM4p2qrGmMHn"
 package:
   patterns:
     - '!node_modules/**'

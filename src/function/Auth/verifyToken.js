@@ -1,7 +1,8 @@
 const jwt = require('jsonwebtoken')
 require('dotenv').config();
-const userRepository = require('../../layer/repository/UserRepository')
-
+const userRepository = require('repository').UserRepository
+require('dotenv').config();
+const message = require('constant').common
 
 const verifyToken = async (event, context, callback) => {
     try {
@@ -10,8 +11,11 @@ const verifyToken = async (event, context, callback) => {
         if (data.code === 200) {
             callback(null, data.result);
         }
-        else {
+        else if (data.code === 403) {
             callback(null, data.result);
+        }
+        else {
+            callback(data.result);
         }
     } catch (error) {
         console.log(error);
@@ -36,19 +40,52 @@ const verifyFuction = async (event) => {
                 const checkTokenInDb = await userRepository.getTokenByUsername(decode.username);
                 if (!checkTokenInDb) {
                     return {
-                        "principalId": decode.iat,
-                        "policyDocument": {
-                            "Version": "2012-10-17",
-                            "Statement": [
-                                {
-                                    "Action": "execute-api:Invoke",
-                                    "Effect": "Deny",
-                                    "Resource": event.methodArn
-                                }
-                            ]
-                        },
-                        "context": {
-                            message: "U"
+                        code: 403,
+                        result:
+                        {
+                            "principalId": decode.iat,
+                            "policyDocument": {
+                                "Version": "2012-10-17",
+                                "Statement": [
+                                    {
+                                        "Action": "execute-api:Invoke",
+                                        "Effect": "Deny",
+                                        "Resource": event.methodArn
+                                    }
+                                ]
+                            },
+                            "context": {
+                                message: "Token in not existed in database"
+                            }
+                        }
+                    }
+                }
+                const validateToken = await jwt.verify(checkTokenInDb.token, process.env.jwt_secret, async (err) => {
+                    if (err) {
+                        return false;
+                    }
+                    else {
+                        return true;
+                    }
+                })
+                if (validateToken && checkTokenInDb.token !== jwtToken) {
+                    return {
+                        code: 403,
+                        result: {
+                            "principalId": decode.iat,
+                            "policyDocument": {
+                                "Version": "2012-10-17",
+                                "Statement": [
+                                    {
+                                        "Action": "execute-api:Invoke",
+                                        "Effect": "Deny",
+                                        "Resource": event.methodArn
+                                    }
+                                ]
+                            },
+                            "context": {
+                                message: "duplicated login"
+                            }
                         }
                     }
                 }

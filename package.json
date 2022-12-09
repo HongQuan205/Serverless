@@ -4,26 +4,36 @@
   "description": "leaning nodejs",
   "main": "index.js",
   "devDependencies": {
+    "eslint": "^8.28.0",
     "serverless-offline": "^10.0.0"
   },
   "dependencies": {
+    "aws-sdk": "^2.1242.0",
+    "axios": "^1.2.1",
     "constant": "./src/layer/constant",
+    "crypto-js": "^4.1.1",
     "db": "./src/layer/db",
     "dotenv": "^16.0.2",
+    "generate-password": "^1.7.0",
+    "generator": "^1.0.1",
     "jsonwebtoken": "^8.5.1",
     "knex": "^2.3.0",
+    "moment": "^2.29.4",
     "mysql": "^2.18.1",
     "mysql2": "^2.3.3",
     "nodemailer": "^6.7.8",
     "password-hash": "^1.2.2",
     "pg": "^8.8.0",
+    "qs": "^6.11.0",
     "repository": "./src/layer/repository",
     "serverless": "^3.22.0",
-    "utility": "./src/layer/utility"
+    "utility": "./src/layer/utility",
+    "uuid": "^9.0.0"
   },
   "scripts": {
     "build": "yarn upgrade",
     "dev": "serverless offline start",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "eslint": "eslint path/to/src"
   }
 }

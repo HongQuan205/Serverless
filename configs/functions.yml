@@ -4,66 +4,18 @@ functions:
   auth:
     handler: src/function/Auth/verifyToken.verifyToken
 
-  createStudent:
+  createUser:
     handler: src/function/Users/create_user.createUser
     events:
       - http:
           path: /create-user
           method: post
           cors: true
-          authorizer:
-            name: auth
-
-  getUserById:
-    handler: src/function/Users/get_user_by_id.getUserById
+  uploadFileAvatar:
+    handler: src/function/Users/upload.uploadFileAvatar
     events:
       - http:
-          path: /get-user/{id}
-          method: get
-          cors: true
-          authorizer:
-            name: auth          
-
-  deleteUser:
-    handler: src/function/Users/delete_user.deleteUser
-    events:
-      - http:
-          path: /delete-user
-          method: delete
-          cors: true
-          authorizer:
-            name: auth
-  updateUser:
-    handler: src/function/Users/update_user.updateUser
-    events:
-      - http:
-          path: /update-user
+          path: /upload-file
           method: put
           cors: true
-          authorizer:
-            name: auth 
-  login:
-    handler: src/function/Users/login.login
-    events:
-      - http:
-          path: /login
-          method: post
-          cors: true
-  check:
-    handler: src/function/Users/check.check
-    events:
-      - http:
-          path: /check
-          method: get
-          cors: true 
-
-  getScoreByUser:
-    handler: src/function/Scores/getAllScoreFromUser.getAllScoreFromUser
-    events:
-      - http:
-          path: /get-score/{idUser}
-          method: get
-          cors: true
-          authorizer:
-            name: auth
 

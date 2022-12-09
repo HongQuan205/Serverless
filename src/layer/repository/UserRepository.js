@@ -1,123 +1,122 @@
-const db = require('db').db;
+'use strict'
+
+/* constant */
+const { accountStatus, siteId, flag, message, format, loginBase,lang } = require('constant')
+const moment = require('moment')
+
+/* DB */
+const db = require('db').db
+
+/* library */
+const moment = require('moment')
+const now = moment().utc().format(format.DATE_TIME)
 
 
+const checkFieldExist = async (data) => {
+  let result
+  if (data.fieldName === 'user_name') {
+    // check existed user name
+    result = await db('users')
+      .where(data.fieldName, data.fieldValue)
+      .where('site_id', siteId)
+      .where('delete_flag', flag.FALSE)
+      .where((builder) =>
+        builder
+          .whereIn('account_status', [
+            accountStatus.ACTIVATED,
+            accountStatus.APPROVED,
+          ])
+          .orWhere((builder) =>
+            builder
+              .where('account_status', accountStatus.REGISTERED)
+              .where('activation_expire', '>', now)
+              .whereNotNull('activation_key')),
+      )
+  } else {
+    // check existed email and phone number
+    result = await db('users')
+      .where(data.fieldName, data.fieldValue)
+      .where('site_id', siteId)
+      .where('delete_flag', flag.FALSE)
+      .whereIn('account_status', [
+        accountStatus.ACTIVATED,
+        accountStatus.APPROVED,
+      ])
+  }
 
-async function getUserById(id) {
-    try {
-        const getUser = await db("users").where('id', id)
-            .select(
-                'id',
-                'name',
-                'age',
-                'phone_number',
-                'address',
-                'username',
-            ).first();
-        return getUser;
-    } catch (error) {
-        console.log("Da xay loi", error)
-        return null;
-    }
+  return result.length ? true : false
 }
 
+async function createUser(userForm, userSettingForm, typeLang) {
+  const trx = await db.transaction();
+  try {
+    // check user exist in system
+    const findUser = await db('users')
+      .where((builder) =>
+        builder.where('email', userForm.email)
+          .orWhere('phone_number', userForm.phone_number)
+      )
+      .where({
+        site_id: siteId,
+        delete_flag: flag.FALSE
+      }).select('id')
 
-async function createUser(user) {
-    const trx = await db.transaction();
-    const createUser = await db('users').insert(
-        {
-            name: user.name,
-            age: user.age,
-            phone_number: user.phone_number,
-            address: user.address,
-            username: user.username,
-            password: user.password,
-            token: user.token
-        }
-    );
-    if (!createUser) {
-        await trx.rollback();
-        return false;
+    if (!findUser.length) {
+      const isUser = await trx('users').insert(userForm)
+      console.log(isUser)
+      if (!isUser.length) {
+        await trx.rollback()
+        return false
+      }
+
+      const userSetting = {
+        user_id: isUser[0],
+        ...userSettingForm
+      }
+
+      const isUserSetting = await trx('user_setting').insert(userSetting)
+      if (!isUserSetting.length) {
+        await trx.rollback()
+        return false
+      }
+      await trx.commit()
+      return true
     }
-    await trx.commit();
-    return createUser
-}
-async function deleteUser(id) {
-    try {
-        await db.transaction(async trx => {
-            const deleteUser = await trx('users').where('id', id).del();
-            if (deleteUser) {
-                await trx.commit();
-                return true;
-            }
-            else {
-                await trx.rollback();
-                return false;
-            }
+    else {
+      let user_id = findUser[0].id
+      const isUserUpdate = await trx('users')
+        .update(userForm).where({
+          id: user_id
         })
-    } catch (error) {
-        console.log(error)
-        return false;
+      if (!isUserUpdate) {
+        await trx.rollback()
+        return false
+      }
     }
+    const result = await trx('users')
+    .where('delete_flag', flag.FALSE)
+    .where('id', findUser[0].id)
+    .where('site_id', siteId)
+    .select(
+      'id',
+      'email',
+      'user_name',
+      'activation_key'
+    ).first()
+
+    //Set template mail
+    const to = result.email
+    const subject = lang[typeLang]
+
+    await trx.commit()
+    return true
+  } catch (error) {
+    console.log(error)
+    return false
+  }
 }
-async function updateUser(updateUser) {
-    try {
-        const update = await db('users').where('id', updateUser.id).update({
-            name: updateUser.name,
-            age: updateUser.age,
-            phone_number: updateUser.phone_number,
-            address: updateUser.address,
-            username: updateUser.username,
-            password: updateUser.password
-        });
-        return update;
-    } catch (error) {
-        console.log(error)
-    }
-}
-async function getTokenByUsername(username)
-{
-    try {
-        let  getToken= await db('users').where('username',username).select('token')
-        return getToken ? getToken : null
-    } catch (error) {
-        console.log(error)
-        return null;
-    }
-}
-async function getUserByUsername(username) {
-    try {
-        const getUserByUserName = await db('users').where('username', username).select(
-            'id',
-            'name',
-            'age',
-            'phone_number',
-            'address',
-            'username',
-            'password'
-        ).first();
-        return getUserByUserName ? getUserByUserName : null;
-    } catch (error) {
-        console.log(error)
-        return null;
-    }
-}
-async function checkDB() {
-    try {
-        const getUserByUserName = await db("users").where('id', 7)
-            .select(
-                'id',
-                'name',
-                'age',
-                'phone_number',
-                'address',
-                'username',
-                'password'
-            ).first()
-        return getUserByUserName;
-    } catch (error) {
-        console.log(error)
-    }
-}
+
 module.exports = {
-    getUserById, createUser, deleteUser, updateUser, getUserByUsername, checkDB,getTokenByUserId
+  checkFieldExist,
+  createUser
 }

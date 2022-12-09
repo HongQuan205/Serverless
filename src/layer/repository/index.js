@@ -1,2 +1,1 @@
-exports.UserRepository = require('./UserRepository')
-exports.ScoresRepository= require('./ScoresRepository')
+exports.userRepository = require('./userRepository.js')

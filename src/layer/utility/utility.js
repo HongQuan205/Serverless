@@ -1,6 +1,8 @@
 
 const jwt = require('jsonwebtoken')
-
+const { code, message } = require('constant')
+const qs = require('qs')
+const axios  = require('axios')
 
 const createResponse = (isSuccess = true, data = {}, code, message) => {
     const response = {};
@@ -29,6 +31,21 @@ const createResponse = (isSuccess = true, data = {}, code, message) => {
         body: JSON.stringify(response)
     }
 }
+
+const fetchAPI = async (url, objForm) =>{
+    try {
+        const res = await axios({
+            url,
+            method: 'POST',
+            data:qs.stringify(objForm)
+        })
+        return res.data
+    } catch (error) {
+        console.error(error)
+        return createResponse(false, null, code.ERROR, error.message)
+    }
+}
+
 const createToken = (data) => {
     if (data) {
         let token = jwt.sign(
@@ -47,6 +64,19 @@ const createToken = (data) => {
     }
 
 }
+
+const verifyRecaptcha = (recaptchaToken) => {
+    const url = 'https://www.google.com/recaptcha/api/siteverify'
+    const form = {
+        secret: process.env.SECRET_KEY_RECAPTCHA,
+        response: recaptchaToken,
+    }
+
+    return fetchAPI(url, form)
+}
+
 module.exports = {
-    createResponse, createToken
+    createResponse,
+    createToken,
+    verifyRecaptcha,
 }

@@ -12,3 +12,5 @@ functions: ${file(./configs/functions.yml):functions}
 
 plugins:
   - serverless-offline
+
+  
