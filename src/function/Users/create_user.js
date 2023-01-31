@@ -13,14 +13,16 @@ const generator = require('generate-password')
 const passwordHash = require('password-hash')
 const uuid = require('uuid')
 const defaultTimeZone = 65
+const defaultLang = 'ja'
 
 // DB
 const { userRepository } = require('repository')
 
 const createUser = async (event) => {
+    console.log(event)
     try {
         const eventBody = JSON.parse(event.body)
-        let typeLang = arrLocale.includes(eventBody.locale) ? eventBody.locale : defaultTimezone
+        let typeLang = arrLocale.includes(eventBody.locale) ? eventBody.locale : defaultLang
         let timeZone = eventBody.timeZone ? eventBody.timeZone : defaultTimeZone
 
         //  check locale

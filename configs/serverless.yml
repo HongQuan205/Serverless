@@ -12,7 +12,7 @@ provider:
       - 'image/png'
       - 'multipart/form-data'
   endpointType: REGIONAL
-  timeout: 30
+  timeout: 120
   region: ap-southeast-1
   runtime: nodejs12.x
   environment:
@@ -24,8 +24,8 @@ provider:
     DB_PASSWORD: "Hanoi!123"
     DB_NAME: "p2tech_test"
     SECRET_KEY_RECAPTCHA: "6Lcp9GcjAAAAAISYj6JWT9VxUezf1yHocb4lYDuN"
-    EMAIL: "reports@myforex.com"
-    PASSWORD_EMAIL: "ddyQ7UKseXGo&7zY"
+    EMAIL: "support@fxt.com"
+    PASSWORD_EMAIL: "MQp~yR:!>f=c>R"
     MAIL_HOST: "smtp.gmail.com"
     MAIL_PORT: "587"
     JWT_SECRET: "AKSJCNDUWIUFMKDNDS"
@@ -48,6 +48,9 @@ provider:
     SERVICES_SID: "MG17e89414f9a3b98cd3f5ceeac8eb18df"
     TIME_SMS_EXPIRE: "10"
     API_KEY_IP: "pvCRM4p2qrGmMHn"
+    AZURE_COMPUTER_VISION_KEY: "1af9c803750f41cca8f2969e8da2c958"
+    AZURE_COMPUTER_VISION_ENDPOINT: "https://myforex-p2t-computer-vision.cognitiveservices.azure.com/"
+
 package:
   patterns:
     - '!node_modules/**'

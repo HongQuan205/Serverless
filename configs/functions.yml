@@ -11,3 +11,26 @@ functions:
           path: /create-user
           method: post
           cors: true
+  login:
+    handler: src/function/Users/login.login
+    events:
+      - http:
+          path: /login
+          method: post
+          cors: true
+  listUser:
+    handler: src/function/Users/get_list_user.getListUser
+    events:
+      - http:
+          path: /list-user
+          method: get
+          cors: true
+  textract_image:
+    handler: src/function/OCR/textract_image.textract_image
+    events:
+      - http:
+          path: textract-image
+          method: post
+          cors: true
+
+
