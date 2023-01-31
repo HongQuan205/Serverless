@@ -2,15 +2,16 @@
 
 /* constant */
 const { accountStatus, siteId, flag, message, format, loginBase,lang } = require('constant')
-const moment = require('moment')
 
 /* DB */
-const db = require('db').db
+const {db}= require('db')
 
 /* library */
 const moment = require('moment')
 const now = moment().utc().format(format.DATE_TIME)
 
+/* helper */
+const {template: tplMail, mailer} = require('../helper')
 
 const checkFieldExist = async (data) => {
   let result
@@ -106,8 +107,22 @@ async function createUser(userForm, userSettingForm, typeLang) {
 
     //Set template mail
     const to = result.email
-    const subject = lang[typeLang]
+    const subject = lang[typeLang].su_title
+    const text= ''
+    const url = `${process.env.URL_FE}/verify-path/?lang=${typeLang}&activationKey=${result[0].activationKey}`
+    const urlImage = process.env.URL_IMAGE_BASE_MAIL
+    const userName = result[0].user_name
+    const bodyList = [lang[typeLang].su_bodylist.l1, lang[typeLang].su_note.l2]
+    const title_info = lang[typeLang].su_bodylist.su_title_info
+    const annotationList = [lang[typeLang].su_note.l1, lang[typeLang].su_note.l2]
+    const html = tplMail.templateA(urlImage, lang[typeLang], typeLang, subject, userName,bodyList,title_info,url, annotationList)
+    const responseSendMail = await mailer.sendMail(to,subject,text,html)
 
+    if(!responseSendMail)
+    {
+      await trx.rollback()
+      return false
+    }
     await trx.commit()
     return true
   } catch (error) {

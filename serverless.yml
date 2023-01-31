@@ -9,7 +9,9 @@ provider: ${file(./configs/serverless.yml):provider}
 
 functions: ${file(./configs/functions.yml):functions}
 
-
+custom:
+  serverless-offline:
+    httpPort: 3001
 plugins:
   - serverless-offline
 

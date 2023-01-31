@@ -12,7 +12,8 @@ const moment = require('moment')
 const generator = require('generate-password')
 const passwordHash = require('password-hash')
 const uuid = require('uuid')
-const defaultTimeZone = 65 
+const defaultTimeZone = 65
+
 // DB
 const { userRepository } = require('repository')
 
@@ -35,7 +36,6 @@ const createUser = async (event) => {
 
         //verify recaptcha
         const jsonRecaptcha = await utility.verifyRecaptcha(eventBody.recaptchaToken)
-        console.log(jsonRecaptcha)
         if (!jsonRecaptcha || !jsonRecaptcha.success) {
             return utility.createResponse(false, null, code.ERROR, message.captcha_is_not_verify)
         }
